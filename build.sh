@@ -6,7 +6,7 @@ mpv_ver=v0.35.1
 
 workdir=$(pwd)
 
-pacman -S --needed git python p7zip mingw-w64-${runtime}-{clang,pkg-config,ffmpeg,libjpeg-turbo,lua51}
+pacman -S --needed git p7zip mingw-w64-${runtime}-{clang,pkg-config,ffmpeg,libjpeg-turbo,lua51,python,meson,rubberband,cmake,libva}
 
 mkdir -p src
 cd src
@@ -15,9 +15,9 @@ cd mpv_$mpv_ver
 
 sed -i '6s/^/#undef MemoryBarrier\n/' ./video/out/opengl/ra_gl.c
 
-/usr/bin/python3 bootstrap.py
-/usr/bin/python3 waf configure CC=clang --check-c-compiler=clang --enable-libmpv-shared --prefix=$workdir/install/mpv
-/usr/bin/python3 waf install
+meson setup build -Dlibmpv=true --prefix=$workdir/install/mpv --buildtype release --strip
+meson compile -C build
+meson install -C build
 
 cd $workdir/install/mpv/bin
 ldd mpv.exe | awk '{print $3}'| grep clangarm64 | xargs -I{} cp -u {} .
