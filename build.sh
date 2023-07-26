@@ -2,7 +2,7 @@
 
 set -e
 runtime=clang-aarch64
-mpv_ver=v0.35.1
+mpv_ver=v0.36.0
 
 workdir=$(pwd)
 
