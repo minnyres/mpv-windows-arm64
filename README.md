@@ -8,7 +8,7 @@ The downloads are available on the [releases](https://github.com/minnyres/mpv-wi
 It is natively built on Windows 11 ARM64.
 
 1. Install [MSYS2-64bit](https://www.msys2.org/).
-2. Enable and open the Clang ARM64 environment in MSYS2, following https://github.com/msys2/MSYS2-packages/issues/1787#issuecomment-980837586.
+2. Open the Clang ARM64 environment in MSYS2.
 3. Run the build script `./build.sh`.
 
 The installation path of mpv is `./install/mpv`. 
