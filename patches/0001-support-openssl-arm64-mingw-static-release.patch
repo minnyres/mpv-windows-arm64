@@ -1,0 +1,67 @@
+From b0039e86657060497eb6f994166bce27939c34c9 Mon Sep 17 00:00:00 2001
+From: minnnyres <liuthgw23@gmail.com>
+Date: Sat, 16 Dec 2023 15:11:21 +0000
+Subject: [PATCH 1/2] support openssl:arm64-mingw-static-release
+
+---
+ ports/openssl/portfile.cmake                  |  1 +
+ ports/openssl/unix/portfile.cmake             |  2 ++
+ .../openssl/unix/support-mingw-aarch64.patch  | 21 +++++++++++++++++++
+ 3 files changed, 24 insertions(+)
+ create mode 100644 ports/openssl/unix/support-mingw-aarch64.patch
+
+diff --git a/ports/openssl/portfile.cmake b/ports/openssl/portfile.cmake
+index e03e4964c..c9c87a2eb 100644
+--- a/ports/openssl/portfile.cmake
++++ b/ports/openssl/portfile.cmake
+@@ -30,6 +30,7 @@ vcpkg_from_github(
+         unix/move-openssldir.patch
+         unix/no-empty-dirs.patch
+         unix/no-static-libs-for-shared.patch
++        unix/support-mingw-aarch64.patch
+ )
+ 
+ vcpkg_list(SET CONFIGURE_OPTIONS
+diff --git a/ports/openssl/unix/portfile.cmake b/ports/openssl/unix/portfile.cmake
+index 02e62732d..4e64d1a45 100644
+--- a/ports/openssl/unix/portfile.cmake
++++ b/ports/openssl/unix/portfile.cmake
+@@ -84,6 +84,8 @@ elseif(VCPKG_TARGET_IS_FREEBSD OR VCPKG_TARGET_IS_OPENBSD)
+ elseif(VCPKG_TARGET_IS_MINGW)
+     if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+         set(OPENSSL_ARCH mingw64)
++    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
++        set(OPENSSL_ARCH mingwarm64)
+     else()
+         set(OPENSSL_ARCH mingw)
+     endif()
+diff --git a/ports/openssl/unix/support-mingw-aarch64.patch b/ports/openssl/unix/support-mingw-aarch64.patch
+new file mode 100644
+index 000000000..0cd894c86
+--- /dev/null
++++ b/ports/openssl/unix/support-mingw-aarch64.patch
+@@ -0,0 +1,21 @@
++--- a/Configurations/10-main.conf
+++++ b/Configurations/10-main.conf
++@@ -1603,6 +1603,18 @@
++         multilib         => "64",
++     },
++ 
+++    "mingwarm64" => {
+++        inherit_from     => [ "mingw-common" ],
+++        cflags           => "",
+++        sys_id           => "MINGWARM64",
+++        bn_ops           => add("SIXTY_FOUR_BIT"),
+++        asm_arch         => 'aarch64',
+++        uplink_arch      => 'armv8',
+++        perlasm_scheme   => "win64",
+++        shared_rcflag    => "",
+++        multilib         => "-arm64",
+++    },
+++
++ #### UEFI
++     "UEFI" => {
++         inherit_from     => [ "BASE_unix" ],
+-- 
+2.39.2
+
