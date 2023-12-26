@@ -93,26 +93,11 @@ sed -i 's|-lshaderc_combined|-lshaderc_combined -lc++|g'  $prefix_dir/lib/pkgcon
 # SPIRV-Cross
 [ -d SPIRV-Cross ] || $gitclone --branch $spirv_cross_ver https://github.com/KhronosGroup/SPIRV-Cross
 pushd SPIRV-Cross
+git apply $prefix_dir/../patches/spirv-cross-0001-static-linking-hacks.patch
 cmake "${cmake_args[@]}" \
-    -DSPIRV_CROSS_SHARED=ON -DSPIRV_CROSS_STATIC=OFF -DSPIRV_CROSS_CLI=OFF
+    -DSPIRV_CROSS_SHARED=ON -DBUILD_SHARED_LIBS=OFF -DSPIRV_CROSS_CLI=OFF
 makeplusinstall
 popd
-sed -i 's|-lspirv-cross-c-shared|-lspirv-cross-c-shared.dll|g'  $prefix_dir/lib/pkgconfig/spirv-cross-c-shared.pc
-
-# # Vulkan-Headers
-# [ -d Vulkan-Headers ] || $gitclone --branch v$vulkan_ver https://github.com/KhronosGroup/Vulkan-Headers
-# pushd Vulkan-Headers
-# cmake "${cmake_args[@]}"
-# makeplusinstall
-# popd
-
-# # Vulkan-Loader
-# [ -d Vulkan-Loader ] || $gitclone --branch v$vulkan_ver https://github.com/KhronosGroup/Vulkan-Loader
-# pushd Vulkan-Loader
-# cmake "${cmake_args[@]}" \
-#     -DENABLE_WERROR=OFF -DBUILD_SHARED_LIBS=OFF
-# makeplusinstall
-# popd
 
 # libplacebo
 [ -d libplacebo ] || $gitclone --branch v$libplacebo_ver https://github.com/haasn/libplacebo.git
@@ -134,8 +119,9 @@ meson setup build "${meson_args[@]}" --prefix=$prefix_dir/../install/mpv  \
 mesonmakeplusinstall
 popd
 
+sed -i 's|-lshaderc_combined -lc++|-lshaderc_combined|g'  $prefix_dir/lib/pkgconfig/shaderc_combined.pc
+
 cd $prefix_dir/../install
-cp $prefix_dir/bin/libspirv-cross-c-shared.dll mpv/bin
 cp $vcpkg_dir/installed/arm64-mingw-static-release/bin/vulkan-1.dll mpv/bin
 $STRIP mpv/bin/*.dll
 $STRIP mpv/bin/*.dll
