@@ -39,7 +39,7 @@ Build some dependencies using vcpkg
     ./vcpkg install --overlay-triplets=triplets_overlay --triplet=arm64-mingw-static-release --allow-unsupported mp3lame
     ./vcpkg install --overlay-triplets=triplets_overlay --triplet=arm64-mingw-static-release --allow-unsupported $packages
 
-Set the root directory of vcpkg:
+You might need to install [PowerShell](https://github.com/PowerShell/PowerShell)  and apply the patches under the `patches` directory before `vcpkg install`. Set the root directory of vcpkg:
 
     export vcpkg_dir=<your-vcpkg-path>
 
