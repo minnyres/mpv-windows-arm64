@@ -1,0 +1,33 @@
+From 8efbf44a7b89bfdbb939584af293884deae398ee Mon Sep 17 00:00:00 2001
+From: minnnyres <liuthgw23@gmail.com>
+Date: Wed, 27 Dec 2023 10:59:04 +0000
+Subject: [PATCH 4/4] build ffmpeg with d3d11va and higher WIN32_WINNT
+
+---
+ ports/ffmpeg/portfile.cmake | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/ports/ffmpeg/portfile.cmake b/ports/ffmpeg/portfile.cmake
+index 9a28fc24b..11cf8432f 100644
+--- a/ports/ffmpeg/portfile.cmake
++++ b/ports/ffmpeg/portfile.cmake
+@@ -54,6 +54,7 @@ if(VCPKG_TARGET_IS_MINGW)
+     elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
+         string(APPEND OPTIONS " --target-os=mingw64")
+     endif()
++    string(APPEND OPTIONS "--enable-d3d11va --enable-dxva2 --enable-mediafoundation")
+ elseif(VCPKG_TARGET_IS_LINUX)
+     string(APPEND OPTIONS " --target-os=linux --enable-pthreads")
+ elseif(VCPKG_TARGET_IS_UWP)
+@@ -555,7 +556,7 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
+ endif()
+ 
+ if(VCPKG_TARGET_IS_MINGW)
+-    set(OPTIONS "${OPTIONS} --extra_cflags=-D_WIN32_WINNT=0x0601")
++    set(OPTIONS "${OPTIONS} --extra_cflags=-D_WIN32_WINNT=0x0A00")
+ elseif(VCPKG_TARGET_IS_WINDOWS)
+     set(OPTIONS "${OPTIONS} --extra-cflags=-DHAVE_UNISTD_H=0")
+ endif()
+-- 
+2.39.2
+
