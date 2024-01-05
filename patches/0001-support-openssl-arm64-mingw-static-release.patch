@@ -1,7 +1,7 @@
-From b0039e86657060497eb6f994166bce27939c34c9 Mon Sep 17 00:00:00 2001
+From ccaeadbb68a240cfca1b79c249f54406a91a7587 Mon Sep 17 00:00:00 2001
 From: minnnyres <liuthgw23@gmail.com>
-Date: Sat, 16 Dec 2023 15:11:21 +0000
-Subject: [PATCH 1/2] support openssl:arm64-mingw-static-release
+Date: Fri, 5 Jan 2024 12:33:06 +0000
+Subject: [PATCH] support openssl:arm64-mingw
 
 ---
  ports/openssl/portfile.cmake                  |  1 +
@@ -11,13 +11,13 @@ Subject: [PATCH 1/2] support openssl:arm64-mingw-static-release
  create mode 100644 ports/openssl/unix/support-mingw-aarch64.patch
 
 diff --git a/ports/openssl/portfile.cmake b/ports/openssl/portfile.cmake
-index e03e4964c..c9c87a2eb 100644
+index 1de3d05aa..902cf72f7 100644
 --- a/ports/openssl/portfile.cmake
 +++ b/ports/openssl/portfile.cmake
-@@ -30,6 +30,7 @@ vcpkg_from_github(
-         unix/move-openssldir.patch
+@@ -32,6 +32,7 @@ vcpkg_from_github(
          unix/no-empty-dirs.patch
          unix/no-static-libs-for-shared.patch
+         unix/disable-quicserver.patch
 +        unix/support-mingw-aarch64.patch
  )
  
