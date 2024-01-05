@@ -3,6 +3,7 @@
 shaderc_ver=2023.7
 spirv_cross_ver=vulkan-sdk-1.3.268.0
 libplacebo_ver=6.338.1
+libbluary_ver=1.3.4
 lua_ver=5.2.4
 mpv_ver=0.37.0
 
@@ -33,6 +34,9 @@ export PKG_CONFIG=/usr/bin/pkg-config
 export PKG_CONFIG_LIBDIR="$prefix_dir/lib/pkgconfig:$vcpkg_dir/installed/arm64-mingw-static-release/lib/pkgconfig"
 export PKG_CONFIG_PATH=$PKG_CONFIG_LIBDIR
 
+# autotools(-like)
+commonflags="--prefix=$prefix_dir --host=$TARGET --enable-static --enable-shared=no"
+
 # CMake
 cmake_args=(
     -G "Ninja" -B "build"
@@ -50,9 +54,14 @@ meson_args=(
     --cross-file "$prefix_dir/../cross.txt"
 )
 
-function makeplusinstall {
+function cmakeplusinstall {
     cmake --build build
     cmake --install build
+}
+
+function gnumakeplusinstall {
+    make -j $(nproc)
+    make install
 }
 
 function mesonmakeplusinstall {
@@ -64,8 +73,16 @@ mkdir -p src
 mkdir -p $prefix_dir/lib/pkgconfig/ 
 cd src
 
+# libbluary
+[ -d libbluray ] || $gitclone --branch $libbluary_ver https://code.videolan.org/videolan/libbluray.git
+pushd libbluray
+./bootstrap 
+./configure $commonflags --enable-largefile --disable-bdjava-jar --without-external-libudfread --disable-examples --enable-optimizations
+gnumakeplusinstall
+popd
+
 # lua52
-$wget https://www.lua.org/ftp/lua-$lua_ver.tar.gz
+[ -d lua-$lua_ver ] || $wget https://www.lua.org/ftp/lua-$lua_ver.tar.gz
 tar xf lua-$lua_ver.tar.gz
 pushd lua-$lua_ver
 sed -i 's/strip /'$STRIP' /g' src/Makefile
@@ -86,7 +103,7 @@ pushd shaderc
 ./utils/git-sync-deps
 cmake "${cmake_args[@]}" \
     -DBUILD_SHARED_LIBS=OFF -DSHADERC_SKIP_TESTS=ON
-makeplusinstall
+cmakeplusinstall
 popd
 sed -i 's|-lshaderc_combined|-lshaderc_combined -lc++|g'  $prefix_dir/lib/pkgconfig/shaderc_combined.pc
 
@@ -96,7 +113,7 @@ pushd SPIRV-Cross
 git apply $prefix_dir/../patches/spirv-cross-0001-static-linking-hacks.patch
 cmake "${cmake_args[@]}" \
     -DSPIRV_CROSS_SHARED=ON -DBUILD_SHARED_LIBS=OFF -DSPIRV_CROSS_CLI=OFF
-makeplusinstall
+cmakeplusinstall
 popd
 
 # libplacebo
