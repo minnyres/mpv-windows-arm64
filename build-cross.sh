@@ -6,6 +6,7 @@ libplacebo_ver=6.338.1
 libbluary_ver=1.3.4
 libsixel_ver=1.8.6
 lua_ver=5.2.4
+zimg_ver=3.0.5
 mpv_ver=0.37.0
 
 prefix_dir=$PWD/mpv-depends
@@ -75,10 +76,23 @@ mkdir -p src
 mkdir -p $prefix_dir/lib/pkgconfig/ 
 cd src
 
+# zimg
+[ -d zimg ] || $gitclone --branch release-$zimg_ver https://github.com/sekrit-twc/zimg.git 
+pushd zimg
+./autogen.sh
+./configure $commonflags
+sed -i 's|Windows.h|windows.h|g' src/zimg/common/arm/cpuinfo_arm.cpp
+gnumakeplusinstall
+popd
+
 # libsixel
 [ -d libsixel ] || $gitclone --branch v$libsixel_ver https://github.com/saitoha/libsixel.git
 pushd libsixel
 cross_compile=yes ./configure $commonflags --disable-debug 
+sed -i 's|HAVE_MALLOC 0|HAVE_MALLOC 1|g' config.h
+sed -i 's|HAVE_REALLOC 0|HAVE_REALLOC 1|g' config.h
+sed -i '/rpl_malloc/d' config.h
+sed -i '/rpl_realloc/d' config.h
 gnumakeplusinstall
 popd
 
@@ -136,6 +150,7 @@ mesonmakeplusinstall
 popd
 
 # mpv
+export CFLAGS="$CFLAGS -I$vcpkg_libs_dir/include/uchardet"
 export LDFLAGS="$LDFLAGS -liconv"
 [ -d mpv ] || $gitclone --branch v$mpv_ver https://github.com/mpv-player/mpv.git
 pushd mpv
