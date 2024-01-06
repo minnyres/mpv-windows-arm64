@@ -4,12 +4,14 @@ shaderc_ver=2023.7
 spirv_cross_ver=vulkan-sdk-1.3.268.0
 libplacebo_ver=6.338.1
 libbluary_ver=1.3.4
+libsixel_ver=1.8.6
 lua_ver=5.2.4
 mpv_ver=0.37.0
 
 prefix_dir=$PWD/mpv-depends
 mkdir -p "$prefix_dir"
 [ -z "$vcpkg_dir" ] && vcpkg_dir=$PWD/vcpkg
+vcpkg_libs_dir=$vcpkg_dir/installed/arm64-mingw-static-release
 [ -z "$llvm_dir" ] && llvm_dir=$PWD/llvm-mingw
 
 wget="wget -nc --progress=bar:force"
@@ -24,14 +26,14 @@ export NM=$TARGET-nm
 export RANLIB=$TARGET-ranlib
 export STRIP=$TARGET-strip
 
-export CFLAGS="-O2 -I$prefix_dir/include -I$vcpkg_dir/installed/arm64-mingw-static-release/include"
+export CFLAGS="-O2 -I$prefix_dir/include -I$vcpkg_libs_dir/include"
 export CXXFLAGS=$CFLAGS
-export CPPFLAGS="-I$prefix_dir/include -I$vcpkg_dir/installed/arm64-mingw-static-release/include"
-export LDFLAGS="--static -L$prefix_dir/lib -L$vcpkg_dir/installed/arm64-mingw-static-release/lib"
+export CPPFLAGS="-I$prefix_dir/include -I$vcpkg_libs_dir/include"
+export LDFLAGS="--static -L$prefix_dir/lib -L$vcpkg_libs_dir/lib"
 
 # anything that uses pkg-config
 export PKG_CONFIG=/usr/bin/pkg-config
-export PKG_CONFIG_LIBDIR="$prefix_dir/lib/pkgconfig:$vcpkg_dir/installed/arm64-mingw-static-release/lib/pkgconfig"
+export PKG_CONFIG_LIBDIR="$prefix_dir/lib/pkgconfig:$vcpkg_libs_dir/lib/pkgconfig"
 export PKG_CONFIG_PATH=$PKG_CONFIG_LIBDIR
 
 # autotools(-like)
@@ -42,7 +44,7 @@ cmake_args=(
     -G "Ninja" -B "build"
     -Wno-dev
     -DCMAKE_SYSTEM_NAME=Windows
-    -DCMAKE_FIND_ROOT_PATH="$prefix_dir;$vcpkg_dir/installed/arm64-mingw-static-release"
+    -DCMAKE_FIND_ROOT_PATH="$prefix_dir;$vcpkg_libs_dir"
     -DCMAKE_RC_COMPILER="${TARGET}-windres"
     -DCMAKE_BUILD_TYPE=Release
     -DCMAKE_INSTALL_PREFIX=$prefix_dir
@@ -72,6 +74,13 @@ function mesonmakeplusinstall {
 mkdir -p src
 mkdir -p $prefix_dir/lib/pkgconfig/ 
 cd src
+
+# libsixel
+[ -d libsixel ] || $gitclone --branch v$libsixel_ver https://github.com/saitoha/libsixel.git
+pushd libsixel
+cross_compile=yes ./configure $commonflags --disable-debug 
+gnumakeplusinstall
+popd
 
 # libbluary
 [ -d libbluray ] || $gitclone --branch $libbluary_ver https://code.videolan.org/videolan/libbluray.git
@@ -114,6 +123,7 @@ git apply $prefix_dir/../patches/spirv-cross-0001-static-linking-hacks.patch
 cmake "${cmake_args[@]}" \
     -DSPIRV_CROSS_SHARED=ON -DBUILD_SHARED_LIBS=OFF -DSPIRV_CROSS_CLI=OFF
 cmakeplusinstall
+git restore .
 popd
 
 # libplacebo
@@ -140,7 +150,7 @@ popd
 sed -i 's|-lshaderc_combined -lc++|-lshaderc_combined|g'  $prefix_dir/lib/pkgconfig/shaderc_combined.pc
 
 cd $prefix_dir/../install
-cp $vcpkg_dir/installed/arm64-mingw-static-release/bin/vulkan-1.dll mpv/bin
+cp $vcpkg_libs_dir/bin/vulkan-1.dll mpv/bin
 $STRIP mpv/bin/*.dll
 $STRIP mpv/bin/*.dll
 7z a -mx9 mpv_${mpv_ver}_arm64.7z mpv
