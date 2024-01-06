@@ -126,6 +126,7 @@ mesonmakeplusinstall
 popd
 
 # mpv
+export LDFLAGS="$LDFLAGS -liconv"
 [ -d mpv ] || $gitclone --branch v$mpv_ver https://github.com/mpv-player/mpv.git
 pushd mpv
 sed -i '6s/^/#undef MemoryBarrier\n/' ./video/out/opengl/ra_gl.c
