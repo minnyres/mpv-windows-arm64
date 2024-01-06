@@ -41,7 +41,7 @@ jobs:
           cp triplets/community/arm64-mingw-static.cmake triplets_overlay/arm64-mingw-static-release.cmake
           echo "set(VCPKG_BUILD_TYPE release)" >> triplets_overlay/arm64-mingw-static-release.cmake
           # clear buildtrees after each package installation to reduce disk space requirements
-          packages="ffmpeg[ass,fdk-aac,freetype,fribidi,iconv,mp3lame,openssl,x264,zlib,xml2,opengl,lzma,bzip2,dav1d,fontconfig,openjpeg] xxhash lcms mujs libjpeg-turbo libarchive jack2 vulkan-loader"
+          packages="ffmpeg[ass,fdk-aac,freetype,fribidi,iconv,mp3lame,openssl,x264,zlib,xml2,opengl,lzma,bzip2,dav1d,fontconfig,openjpeg] xxhash lcms mujs libjpeg-turbo libarchive jack2 vulkan-loader rubberband uchardet"
           ./vcpkg upgrade \
             --overlay-triplets=triplets_overlay \
             --no-dry-run
