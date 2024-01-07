@@ -10,6 +10,8 @@ zimg_ver=3.0.5
 dvdnav_ver=6.1.1
 dvdcss_ver=1.4.3
 dvdread_ver=6.1.3
+libcdio_ver=2.1.0
+libcdio_paranoia_ver=10.2+2.0.1
 mpv_ver=0.37.0
 
 prefix_dir=$PWD/mpv-depends
@@ -78,6 +80,22 @@ function mesonmakeplusinstall {
 mkdir -p src
 mkdir -p $prefix_dir/lib/pkgconfig/ 
 cd src
+
+# libcdio
+[ -d libcdio-$libcdio_ver ] || $wget https://ftp.gnu.org/gnu/libcdio/libcdio-$libcdio_ver.tar.bz2
+tar xf libcdio-$libcdio_ver.tar.bz2
+pushd libcdio-$libcdio_ver 
+./configure $commonflags --disable-cpp-progs --disable-example-progs --enable-largefile --with-libiconv-prefix=$vcpkg_libs_dir
+gnumakeplusinstall
+popd
+
+# libcdio-paranoia
+[ -d libcdio-paranoia-$libcdio_paranoia_ver ] || $wget https://ftp.gnu.org/gnu/libcdio/libcdio-paranoia-$libcdio_paranoia_ver.tar.gz
+tar xf libcdio-paranoia-$libcdio_paranoia_ver.tar.gz
+pushd libcdio-paranoia-$libcdio_paranoia_ver
+./configure $commonflags --disable-cpp-progs --disable-example-progs
+gnumakeplusinstall
+popd
 
 # libdvdcss
 [ -d libdvdcss ] || $gitclone --branch $dvdcss_ver https://code.videolan.org/videolan/libdvdcss
@@ -184,7 +202,7 @@ pushd mpv
 sed -i '6s/^/#undef MemoryBarrier\n/' ./video/out/opengl/ra_gl.c
 meson setup build "${meson_args[@]}" --prefix=$prefix_dir/../install/mpv  \
     -Dlibmpv=true \
-    -D{shaderc,spirv-cross,d3d11,dvdnav}=enabled \
+    -D{shaderc,spirv-cross,d3d11,dvdnav,cdda,openal}=enabled \
     --prefer-static
 mesonmakeplusinstall
 popd
