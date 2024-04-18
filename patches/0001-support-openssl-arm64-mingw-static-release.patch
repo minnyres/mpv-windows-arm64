@@ -1,6 +1,6 @@
-From ccaeadbb68a240cfca1b79c249f54406a91a7587 Mon Sep 17 00:00:00 2001
+From 2a60bbc0a7630207aa3846f7d69138a84500b456 Mon Sep 17 00:00:00 2001
 From: minnnyres <liuthgw23@gmail.com>
-Date: Fri, 5 Jan 2024 12:33:06 +0000
+Date: Thu, 18 Apr 2024 19:45:03 +0000
 Subject: [PATCH] support openssl:arm64-mingw
 
 ---
@@ -11,19 +11,19 @@ Subject: [PATCH] support openssl:arm64-mingw
  create mode 100644 ports/openssl/unix/support-mingw-aarch64.patch
 
 diff --git a/ports/openssl/portfile.cmake b/ports/openssl/portfile.cmake
-index 1de3d05aa..902cf72f7 100644
+index 2623c1d68..47fe86d20 100644
 --- a/ports/openssl/portfile.cmake
 +++ b/ports/openssl/portfile.cmake
-@@ -32,6 +32,7 @@ vcpkg_from_github(
+@@ -30,6 +30,7 @@ vcpkg_from_github(
+         unix/move-openssldir.patch
          unix/no-empty-dirs.patch
          unix/no-static-libs-for-shared.patch
-         unix/disable-quicserver.patch
-+        unix/support-mingw-aarch64.patch
++	unix/support-mingw-aarch64.patch
  )
  
  vcpkg_list(SET CONFIGURE_OPTIONS
 diff --git a/ports/openssl/unix/portfile.cmake b/ports/openssl/unix/portfile.cmake
-index 02e62732d..4e64d1a45 100644
+index 72b04e16a..15a1e1b81 100644
 --- a/ports/openssl/unix/portfile.cmake
 +++ b/ports/openssl/unix/portfile.cmake
 @@ -84,6 +84,8 @@ elseif(VCPKG_TARGET_IS_FREEBSD OR VCPKG_TARGET_IS_OPENBSD)
