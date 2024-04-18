@@ -2,7 +2,7 @@
 
 shaderc_ver=2023.7
 spirv_cross_ver=vulkan-sdk-1.3.268.0
-libplacebo_ver=6.338.1
+libplacebo_ver=6.338.2
 libbluary_ver=1.3.4
 libsixel_ver=1.8.6
 lua_ver=5.2.4
@@ -12,7 +12,7 @@ dvdcss_ver=1.4.3
 dvdread_ver=6.1.3
 libcdio_ver=2.1.0
 libcdio_paranoia_ver=10.2+2.0.1
-mpv_ver=0.37.0
+mpv_ver=0.38.0
 
 prefix_dir=$PWD/mpv-depends
 mkdir -p "$prefix_dir"
