@@ -69,3 +69,11 @@ jobs:
         with:
           name: mpv_${{ env.mpv_version }}_arm64
           path: mpv_*.7z
+
+      - name: Batch release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: mpv_*.7z
