@@ -3,6 +3,8 @@
 
 The downloads are available on the [releases](https://github.com/minnyres/mpv-windows-arm64/releases) page.
 
+We also support [SMPlayer for WoA](https://github.com/minnyres/smplayer-windows-arm64), which is based on mpv and has a more convenient GUI.
+
 ## How to build
 We support two methods to build [mpv](https://mpv.io/) for Windows ARM64:
 + native build on a Windows 11 ARM64 device with MSYS2, with the thirty-party dependencies dynamically linked
