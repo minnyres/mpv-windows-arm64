@@ -1,17 +1,17 @@
 #!/bin/bash -e
 
-shaderc_ver=2023.7
-spirv_cross_ver=vulkan-sdk-1.3.268.0
-libplacebo_ver=6.338.2
+shaderc_ver=2024.2
+spirv_cross_ver=vulkan-sdk-1.3.290.0
+libplacebo_ver=7.349.0
 libbluary_ver=1.3.4
-libsixel_ver=1.8.6
+libsixel_ver=1.10.3
 lua_ver=5.2.4
 zimg_ver=3.0.5
 dvdnav_ver=6.1.1
 dvdcss_ver=1.4.3
 dvdread_ver=6.1.3
 libcdio_ver=2.1.0
-libcdio_paranoia_ver=10.2+2.0.1
+libcdio_paranoia_ver=10.2+2.0.2
 mpv_ver=0.38.0
 
 prefix_dir=$PWD/mpv-depends
@@ -131,7 +131,7 @@ gnumakeplusinstall
 popd
 
 # libsixel
-[ -d libsixel ] || $gitclone --branch v$libsixel_ver https://github.com/saitoha/libsixel.git
+[ -d libsixel ] || $gitclone --branch v$libsixel_ver https://github.com/libsixel/libsixel
 pushd libsixel
 cross_compile=yes ./configure $commonflags --disable-debug 
 sed -i 's|HAVE_MALLOC 0|HAVE_MALLOC 1|g' config.h
