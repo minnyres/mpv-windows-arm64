@@ -133,7 +133,7 @@ popd
 # libsixel
 [ -d libsixel ] || $gitclone --branch v$libsixel_ver https://github.com/saitoha/libsixel
 pushd libsixel
-cross_compile=yes ./configure $commonflags --disable-debug 
+cross_compile=yes ./configure $commonflags --disable-debug --disable-python
 sed -i 's|HAVE_MALLOC 0|HAVE_MALLOC 1|g' config.h
 sed -i 's|HAVE_REALLOC 0|HAVE_REALLOC 1|g' config.h
 sed -i '/rpl_malloc/d' config.h
