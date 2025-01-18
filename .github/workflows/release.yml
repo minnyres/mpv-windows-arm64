@@ -25,12 +25,12 @@ jobs:
           rm llvm-mingw-*.tar.xz
           mv llvm-mingw-* llvm-mingw
 
-      - name: Setup anew (or from cache) vcpkg (and does not build any package)
+      - name: Setup a new (or from cache) vcpkg (and does not build any package)
         uses: lukka/run-vcpkg@v11 # Always specify the specific _version_ of the
                                   # action you need, `v11` in this case to stay up
                                   # to date with fixes on the v11 branch
         with:
-          vcpkgGitCommitId: 'b322364f06308bdd24823f9d8f03fe0cc86fd46f'
+          vcpkgGitCommitId: '6f29f12e82a8293156836ad81cc9bf5af41fe836'
           
       - name: Install libraries from vcpkg
         run: |
@@ -44,7 +44,6 @@ jobs:
           mkdir triplets_overlay
           cp triplets/community/arm64-mingw-static.cmake triplets_overlay/arm64-mingw-static-release.cmake
           echo "set(VCPKG_BUILD_TYPE release)" >> triplets_overlay/arm64-mingw-static-release.cmake
-          echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake
           # clear buildtrees after each package installation to reduce disk space requirements
           packages="ffmpeg[ass,fdk-aac,freetype,fribidi,iconv,mp3lame,openssl,x264,zlib,xml2,opengl,lzma,bzip2,dav1d,fontconfig,openjpeg] xxhash lcms mujs libjpeg-turbo libarchive jack2 vulkan-loader rubberband uchardet openal-soft"
           ./vcpkg upgrade \
@@ -54,12 +53,14 @@ jobs:
             --overlay-triplets=triplets_overlay \
             --clean-after-build \
             --triplet=arm64-mingw-static-release \
+            --host-triplet=x64-linux-release \
             --allow-unsupported \
             mp3lame
           ./vcpkg install \
             --overlay-triplets=triplets_overlay \
             --clean-after-build \
             --triplet=arm64-mingw-static-release \
+            --host-triplet=x64-linux-release \
             --allow-unsupported \
             $packages
 
