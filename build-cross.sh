@@ -7,9 +7,9 @@ libbluary_ver=1.3.4
 libsixel_ver=1.8.6
 lua_ver=5.2.4
 zimg_ver=3.0.5
-dvdnav_ver=6.1.1
-dvdcss_ver=1.4.3
-dvdread_ver=6.1.3
+# dvdnav_ver=6.1.1
+# dvdcss_ver=1.4.3
+# dvdread_ver=6.1.3
 libcdio_ver=2.1.0
 libcdio_paranoia_ver=10.2+2.0.2
 mpv_ver=0.39.0
@@ -97,29 +97,29 @@ pushd libcdio-paranoia-$libcdio_paranoia_ver
 gnumakeplusinstall
 popd
 
-# libdvdcss
-[ -d libdvdcss ] || $gitclone --branch $dvdcss_ver https://code.videolan.org/videolan/libdvdcss
-pushd libdvdcss
-autoreconf -fi
-./configure $commonflags --enable-largefile
-gnumakeplusinstall
-popd
+# # libdvdcss
+# [ -d libdvdcss ] || $gitclone --branch $dvdcss_ver https://code.videolan.org/videolan/libdvdcss
+# pushd libdvdcss
+# autoreconf -fi
+# ./configure $commonflags --enable-largefile
+# gnumakeplusinstall
+# popd
 
-# libdvdread
-[ -d libdvdread ] || $gitclone --branch $dvdread_ver https://code.videolan.org/videolan/libdvdread.git
-pushd libdvdread
-autoreconf -fi
-./configure $commonflags --enable-largefile --with-libdvdcss
-gnumakeplusinstall
-popd
+# # libdvdread
+# [ -d libdvdread ] || $gitclone --branch $dvdread_ver https://code.videolan.org/videolan/libdvdread.git
+# pushd libdvdread
+# autoreconf -fi
+# ./configure $commonflags --enable-largefile --with-libdvdcss
+# gnumakeplusinstall
+# popd
 
-# libdvdnav
-[ -d libdvdnav ] || $gitclone --branch $dvdnav_ver https://code.videolan.org/videolan/libdvdnav.git
-pushd libdvdnav
-autoreconf -fi
-./configure $commonflags --enable-largefile
-gnumakeplusinstall
-popd
+# # libdvdnav
+# [ -d libdvdnav ] || $gitclone --branch $dvdnav_ver https://code.videolan.org/videolan/libdvdnav.git
+# pushd libdvdnav
+# autoreconf -fi
+# ./configure $commonflags --enable-largefile
+# gnumakeplusinstall
+# popd
 
 # zimg
 [ -d zimg ] || $gitclone --branch release-$zimg_ver https://github.com/sekrit-twc/zimg.git 
