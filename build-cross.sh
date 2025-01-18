@@ -212,6 +212,6 @@ sed -i 's|-lshaderc_combined -lc++|-lshaderc_combined|g'  $prefix_dir/lib/pkgcon
 cd $prefix_dir/../install
 cp $vcpkg_libs_dir/bin/vulkan-1.dll mpv/bin
 $STRIP mpv/bin/*.dll
-$STRIP mpv/bin/*.dll
+$STRIP mpv/bin/*.exe
 7z a -mx9 mpv_${mpv_ver}_arm64.7z mpv
 mv mpv_${mpv_ver}_arm64.7z ..
