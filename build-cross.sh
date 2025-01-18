@@ -150,20 +150,28 @@ gnumakeplusinstall
 popd
 
 # lua52
-[ -d lua-$lua_ver ] || $wget https://www.lua.org/ftp/lua-$lua_ver.tar.gz
-tar xf lua-$lua_ver.tar.gz
-pushd lua-$lua_ver
-sed -i 's/strip /'$STRIP' /g' src/Makefile
-make CC=$CC AR="$AR rcu" RANLIB=$RANLIB STRIP=$STRIP mingw
-make \
-    TO_BIN="lua.exe luac.exe lua52.dll" \
-    TO_LIB="liblua.a" \
-    INSTALL_DATA='cp -d' \
-    INSTALL_TOP=$prefix_dir \
-    install
+# [ -d lua-$lua_ver ] || $wget https://www.lua.org/ftp/lua-$lua_ver.tar.gz
+# tar xf lua-$lua_ver.tar.gz
+# pushd lua-$lua_ver
+# sed -i 's/strip /'$STRIP' /g' src/Makefile
+# make CC=$CC AR="$AR rcu" RANLIB=$RANLIB STRIP=$STRIP mingw
+# make \
+#     TO_BIN="lua.exe luac.exe lua52.dll" \
+#     TO_LIB="liblua.a" \
+#     INSTALL_DATA='cp -d' \
+#     INSTALL_TOP=$prefix_dir \
+#     install
+# popd
+# cp $prefix_dir/../lua52.pc $prefix_dir/lib/pkgconfig/lua52.pc
+# sed -i 's|lua_prefix|'$prefix_dir'|g' $prefix_dir/lib/pkgconfig/lua52.pc
+
+# luajit
+[ -d LuaJIT ] || $gitclone https://github.com/LuaJIT/LuaJIT
+pushd LuaJIT
+sed -i 's|FILE_T= luajit|FILE_T= luajit.exe|g'  Makefile
+make  install PREFIX=$prefix_dir BUILDMODE=static  HOST_CC=gcc CROSS=aarch64-w64-mingw32- TARGET_SYS=Windows
+sed -i 's| -Wl,-E -lm -ldl|-lm -liconv|g' $prefix_dir/lib/pkgconfig/luajit.pc
 popd
-cp $prefix_dir/../lua52.pc $prefix_dir/lib/pkgconfig/lua52.pc
-sed -i 's|lua_prefix|'$prefix_dir'|g' $prefix_dir/lib/pkgconfig/lua52.pc
 
 # shaderc
 [ -d shaderc ] || $gitclone --branch v$shaderc_ver https://github.com/google/shaderc.git
