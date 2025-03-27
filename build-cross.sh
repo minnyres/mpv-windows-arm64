@@ -1,18 +1,18 @@
 #!/bin/bash -e
 
-shaderc_ver=2024.2
-spirv_cross_ver=vulkan-sdk-1.3.290.0
+shaderc_ver=2025.1
+spirv_cross_ver=vulkan-sdk-1.4.309.0
 libplacebo_ver=7.349.0
 libbluary_ver=1.3.4
 libsixel_ver=1.8.6
-lua_ver=5.2.4
+# lua_ver=5.2.4
 zimg_ver=3.0.5
 # dvdnav_ver=6.1.1
 # dvdcss_ver=1.4.3
 # dvdread_ver=6.1.3
-libcdio_ver=2.1.0
+libcdio_ver=2.2.0
 libcdio_paranoia_ver=10.2+2.0.2
-mpv_ver=0.39.0
+mpv_ver=0.40.0
 
 prefix_dir=$PWD/mpv-depends
 mkdir -p "$prefix_dir"

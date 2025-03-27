@@ -8,7 +8,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      mpv_version: "0.37.0"
       llvm_path: "${{ github.workspace }}/llvm-mingw"
     
     steps:
@@ -30,7 +29,7 @@ jobs:
                                   # action you need, `v11` in this case to stay up
                                   # to date with fixes on the v11 branch
         with:
-          vcpkgGitCommitId: '6f29f12e82a8293156836ad81cc9bf5af41fe836'
+          vcpkgGitCommitId: 'b02e341c927f16d991edbd915d8ea43eac52096c'
           
       - name: Install libraries from vcpkg
         run: |
@@ -70,13 +69,13 @@ jobs:
           ./build-cross.sh
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: mpv_${{ env.mpv_version }}_arm64
           path: mpv_*.7z
 
       - name: Batch release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
