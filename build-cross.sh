@@ -10,7 +10,7 @@ zimg_ver=3.0.5
 # dvdnav_ver=6.1.1
 # dvdcss_ver=1.4.3
 # dvdread_ver=6.1.3
-libcdio_ver=2.2.0
+libcdio_ver=2.1.0
 libcdio_paranoia_ver=10.2+2.0.2
 mpv_ver=0.40.0
 
