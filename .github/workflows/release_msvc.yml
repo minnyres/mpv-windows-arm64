@@ -1,0 +1,65 @@
+name: Build for Windows ARM64
+
+on:
+  push:
+
+jobs:
+  build-windows-arm64:
+    name: Build
+    runs-on: windows-latest
+    env:
+      mpv_version: "4.1.3"
+      mpv_path: "${{ github.workspace }}/mpv-windows-arm64"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup devcmd
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64_arm64
+          
+      - name: Setup a new (or from cache) vcpkg (and does not build any package)
+        uses: lukka/run-vcpkg@v11 # Always specify the specific _version_ of the
+                                  # action you need, `v11` in this case to stay up
+                                  # to date with fixes on the v11 branch
+        with:
+          vcpkgGitCommitId: '9e593bb18ea69cc5095e012465dcd675a822ed0d'
+
+      - name: Install dependencies from vcpkg
+        run: |
+          # tell vcpkg to only build Release variants of the dependencies
+          New-Item `
+            -Path "${{ github.workspace }}" `
+            -Name "triplets_overlay" `
+            -ItemType Directory
+          Copy-Item `
+            "${{ env.RUNVCPKG_VCPKG_ROOT }}/triplets/arm64-windows.cmake" `
+            "${{ github.workspace }}/triplets_overlay/arm64-windows-release.cmake"
+          Add-Content `
+            "${{ github.workspace }}/triplets_overlay/arm64-windows-release.cmake" `
+            -Value "set(VCPKG_BUILD_TYPE release)"
+          # clear buildtrees after each package installation to reduce disk space requirements
+          $packages = `
+            "ffmpeg:arm64-windows-release",
+            "xxhash:arm64-windows-release",
+            "lcms:arm64-windows-release",
+            "libjpeg-turbo:arm64-windows-release",
+            "libarchive:arm64-windows-release",
+            "jack2:arm64-windows-release",
+            "vulkan-loader:arm64-windows-release",
+            "rubberband:arm64-windows-release",
+            "uchardet:arm64-windows-release",
+            "openal-soft:arm64-windows-release",
+            "libdvdcss:arm64-windows-release",
+            "libdvdread:arm64-windows-release",
+            "libdvdnav:arm64-windows-release",
+            "luajit:arm64-windows-release",
+            "libbluray:arm64-windows-release",
+            "shaderc:arm64-windows-release",
+            "spirv-cross:arm64-windows-release"
+          ${{ env.RUNVCPKG_VCPKG_ROOT }}/vcpkg.exe install `
+            --overlay-triplets="${{ github.workspace }}/triplets_overlay" `
+            --clean-after-build `
+            $packages
