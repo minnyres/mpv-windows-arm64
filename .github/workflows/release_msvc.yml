@@ -1,4 +1,4 @@
-name: Build for Windows ARM64
+name: Build for Windows ARM64 with MSVC
 
 on:
   push:
@@ -42,12 +42,13 @@ jobs:
             -Value "set(VCPKG_BUILD_TYPE release)"
           # clear buildtrees after each package installation to reduce disk space requirements
           $packages = `
-            "ffmpeg:arm64-windows-release",
+            "ffmpeg[srt,ass,fdk-aac,freetype,fribidi,iconv,mp3lame,openssl,x264,zlib,xml2,opengl,lzma,bzip2,dav1d,fontconfig,openjpeg]:arm64-windows-release",
             "xxhash:arm64-windows-release",
             "lcms:arm64-windows-release",
             "libjpeg-turbo:arm64-windows-release",
             "libarchive:arm64-windows-release",
             "jack2:arm64-windows-release",
+            "mujs:arm64-windows-release",
             "vulkan-loader:arm64-windows-release",
             "rubberband:arm64-windows-release",
             "uchardet:arm64-windows-release",
@@ -57,9 +58,41 @@ jobs:
             "libdvdnav:arm64-windows-release",
             "luajit:arm64-windows-release",
             "libbluray:arm64-windows-release",
-            "shaderc:arm64-windows-release",
-            "spirv-cross:arm64-windows-release"
+            "shaderc:arm64-windows-release"
           ${{ env.RUNVCPKG_VCPKG_ROOT }}/vcpkg.exe install `
             --overlay-triplets="${{ github.workspace }}/triplets_overlay" `
             --clean-after-build `
             $packages
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ucrt64
+          update: true
+          install: pactoys
+          pacboy: >-
+            meson:p
+            ninja:p
+            cmake:p
+            git:p
+            ntldd:p
+            pkgconf:p
+
+      - name: Build mpv
+        run: |
+          cd msvc-build
+          $env:path = "C:/msys64/ucrt64/bin;$;env:path"
+          ./build_spirv_cross_arm64.ps1
+          ./build_libplacebo_arm64.ps1
+          ./build_mpv_arm64.ps1
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: libraries
+          path: ${{ env.RUNVCPKG_VCPKG_ROOT }}/installed/arm64-windows-release
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: libraries
+          path: msvc-build/mpv-arm64

@@ -1,4 +1,4 @@
-name: Build for Windows ARM64
+name: Build for Windows ARM64 with LLVM-Mingw
 
 on:
   workflow_dispatch:
