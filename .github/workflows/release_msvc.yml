@@ -64,7 +64,9 @@ jobs:
             --clean-after-build `
             $packages
 
-      - uses: msys2/setup-msys2@v2
+      - name: Setup MSYS2
+        id: msys2  # <-- Give the step an ID
+        uses: msys2/setup-msys2@v2
         with:
           msystem: ucrt64
           update: true
@@ -72,15 +74,17 @@ jobs:
           pacboy: >-
             meson:p
             ninja:p
-            cmake:p
-            git:p
             ntldd:p
             pkgconf:p
+
+      - name: Print MSYS2 Location
+        run: echo "MSYS2 is installed at ${{ steps.msys2.outputs.msys2-location }}"
 
       - name: Build mpv
         run: |
           cd msvc-build
-          $env:path = "C:/msys64/ucrt64/bin;$;env:path"
+          $env:path = "$env:path;${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin"
+          $VCPKG_LIB_DIR = "${{ env.RUNVCPKG_VCPKG_ROOT }}/installed/arm64-windows-release"
           ./build_spirv_cross_arm64.ps1
           ./build_libplacebo_arm64.ps1
           ./build_mpv_arm64.ps1
@@ -94,5 +98,5 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: libraries
+          name: mpv-arm64
           path: msvc-build/mpv-arm64

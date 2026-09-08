@@ -68,3 +68,5 @@ meson install -C build
 
 Write-Host "Build completed successfully!" -ForegroundColor Green
 Write-Host "Installed to: $INSTALL_PREFIX" -ForegroundColor Green
+
+Set-Location $WORKSPACE

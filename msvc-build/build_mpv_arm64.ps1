@@ -94,15 +94,24 @@ Copy-Item -Path $INSTALL_PREFIX/bin/*.dll -Destination $MPV_INSTALL_BIN -Force
 $env:path = "$VCPKG_BIN;$env:path"
 
 $output = & ntldd -R $MPV_EXE 2>&1 | Out-String
-$imports = [regex]::Matches($output, '(\S+\.dll)\s*=>\s+(?!not found)') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+Write-Host $output
+$imports = $output -split "`r?`n" |
+    Where-Object { $_ -notmatch 'not found' } |
+    ForEach-Object {
+        $match = [regex]::Match($_, '(?i)([\w-]+\.dll)')
+        $match.Groups[1].Value
+    } |
+    Where-Object { $_ } |
+    Sort-Object -Unique
+Write-Host $imports
 
 foreach ($dll in $imports) {
     $dllPath = Join-Path $VCPKG_BIN $dll
     Write-Host "Checking: $dllPath"
     if (Test-Path $dllPath) {
-        Copy-Item -Path $dllPath -Destination $INSTALL_BIN -Force
+        Copy-Item -Path $dllPath -Destination $MPV_INSTALL_BIN -Force
     }
 }
 
 Write-Host "Build completed successfully!" -ForegroundColor Green
-Write-Host "Installed to: $INSTALL_PREFIX" -ForegroundColor Green
+Write-Host "mpv-arm64 installed to: $MPV_INSTALL_PREFIX" -ForegroundColor Green
