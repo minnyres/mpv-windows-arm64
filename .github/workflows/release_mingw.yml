@@ -1,7 +1,7 @@
-name: Build for Windows ARM64
+name: Build for Windows ARM64 with LLVM-Mingw
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   build-windows-arm64:

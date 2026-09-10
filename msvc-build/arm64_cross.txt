@@ -1,0 +1,15 @@
+[binaries]
+c = ['clang-cl', '--target=aarch64-win32-msvc']
+cpp = ['clang-cl', '--target=aarch64-win32-msvc']
+ar = 'llvm-lib'
+strip = 'llvm-strip'
+windres = 'llvm-rc'
+cmake = 'cmake'
+pkg-config = 'pkgconf'
+ld = 'lld-link' 
+
+[host_machine]
+system = 'windows'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
