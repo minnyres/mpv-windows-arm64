@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 # Configuration
 $LIBPLACEBO_REPO = "https://github.com/haasn/libplacebo.git"
-$LIBPLACEBO_VERSION = "v7.360.1"
+$LIBPLACEBO_VERSION = "v7.387.0"
 
 $WORKSPACE = $pwd
 $INSTALL_PREFIX = Join-Path $WORKSPACE "install"
