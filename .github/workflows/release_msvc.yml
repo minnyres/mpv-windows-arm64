@@ -8,7 +8,7 @@ jobs:
     name: Build
     runs-on: windows-latest
     env:
-      mpv_path: "${{ github.workspace }}/mpv-windows-arm64"
+      mpv_version: "v0.42.0"
 
     steps:
       - name: Checkout repository
@@ -82,20 +82,37 @@ jobs:
       - name: Build mpv
         run: |
           cd msvc-build
+          $MPV_VERSION = "${{ env.mpv_version }}"
           $env:path = "$env:path;${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin"
           $VCPKG_LIB_DIR = "${{ env.RUNVCPKG_VCPKG_ROOT }}/installed/arm64-windows-release"
           ./build_spirv_cross_arm64.ps1
           ./build_libplacebo_arm64.ps1
           ./build_mpv_arm64.ps1
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: libraries
-          path: ${{ env.RUNVCPKG_VCPKG_ROOT }}/installed/arm64-windows-release
+      - name: Prepare build artifacts
+        run: |
+          $VCPKG_LIB_DIR = "${{ env.RUNVCPKG_VCPKG_ROOT }}/installed/arm64-windows-release"
+          cp msvc-build/mpv-arm64/bin mpv -r
+          cp msvc-build/mpv-arm64 mpv-dev -r
+          cp msvc-build/mpv-arm64 mpv-dev-full -r
+          rm mpv/libmpv*.dll
+          cp msvc-build/install/* mpv-dev-full/ -r -Force
+          cp $VCPKG_LIB_DIR/* mpv-dev-full -r -Force
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: mpv-arm64
-          path: msvc-build/mpv-arm64
+          name: mpv-dev_${{ env.mpv_version }}_arm64
+          path: mpv-dev
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mpv-dev-full_${{ env.mpv_version }}_arm64
+          path: mpv-dev-full
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mpv_${{ env.mpv_version }}_arm64
+          path: mpv
