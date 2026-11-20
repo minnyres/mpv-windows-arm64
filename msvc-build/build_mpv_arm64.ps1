@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 # Configuration
 $MPV_REPO = "https://github.com/mpv-player/mpv.git"
-$MPV_VERSION = "v0.41.0"
+# $MPV_VERSION = "v0.42.0"
 
 $WORKSPACE = $pwd
 $INSTALL_PREFIX = Join-Path $WORKSPACE "install"

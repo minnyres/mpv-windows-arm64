@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 # Configuration
 $SPIRV_CROSS_REPO = "https://github.com/KhronosGroup/SPIRV-Cross.git"
-$SPIRV_CROSS_VERSION = "vulkan-sdk-1.4.357.0"
+$SPIRV_CROSS_VERSION = "vulkan-sdk-1.4.363.0"
 
 $WORKSPACE = $pwd
 $INSTALL_PREFIX = Join-Path $WORKSPACE "install"
